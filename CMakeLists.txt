@@ -5,3 +5,4 @@ set(CMAKE_C_STANDARD 99)
 
 set(SOURCE_FILES main.c)
 add_executable(helloWork_C ${SOURCE_FILES})
+install(TARGETS helloWork_C DESTINATION bin)
