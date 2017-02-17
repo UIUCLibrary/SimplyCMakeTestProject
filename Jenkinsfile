@@ -15,7 +15,7 @@ pipeline {
 
     }
 
-    stage("Windows Configuring Build") {
+    stage("Windows Building") {
       agent{
         label 'Windows'
       }
@@ -23,34 +23,20 @@ pipeline {
       steps{
         echo "Cleaning up"
         deleteDir()
+
         unstash "Source"
+
         echo "Create build folder"
         bat 'mkdir build'
+
         echo "Configuring"
         dir('build') {
           bat 'cmake ..'
-          stash includes: '**', name: "Windows_configured"
           bat 'dir /s'
+          echo "Building"
+          bat 'cmake --build . --config Release'
+          stash includes: '**', name: "Windows_Binary"
         }
-        bat 'dir /s'
-
-      }
-
-    }
-
-    stage("Windows build") {
-      agent{
-        label 'Windows'
-      }
-
-      steps{
-        echo "Cleaning build directory"
-        deleteDir()
-        unstash "Windows_configured"
-        bat 'dir /s'
-        echo "Building"
-        bat 'cmake --build . --config Release --clean-first'
-        stash includes: '**', name: "Windows_Binary"
       }
     }
 
