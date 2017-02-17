@@ -30,6 +30,7 @@ pipeline {
         dir('build') {
           bat 'cmake ..'
           stash includes: '**', name: "Windows_configured"
+          bat 'dir /s'
         }
         bat 'dir /s'
 
