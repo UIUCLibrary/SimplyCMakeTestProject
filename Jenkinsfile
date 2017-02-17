@@ -15,7 +15,7 @@ pipeline {
                 echo "Building"
                 bat 'cmake --build . --config Release --clean-first'
                 echo 'Packaging into a zip file'
-                bat 'cpack -G ZIP'
+                bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
                 // bat 'cmake --build . --target install --config Release'
                 archiveArtifacts 'dist/**'
 
