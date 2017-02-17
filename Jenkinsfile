@@ -31,6 +31,7 @@ pipeline {
             bat 'cmake --build . --config Release --clean-first'
             stash includes: '**', name: "Windows_Binary"
           }
+      }
 
         stage("Windows package") {
 
@@ -48,6 +49,7 @@ pipeline {
             stash includes: 'dist/**', name: "Windows_packaged"
             }
         }
+
         stage("Archiving") {
           agent any
           steps {
