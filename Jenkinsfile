@@ -36,8 +36,9 @@ pipeline {
 
           echo "Building"
           bat 'cmake --build . --config Release'
-          stash includes: '**', name: "Windows_Binary"
+
         }
+        stash includes: '**', name: "Windows_Binary"
       }
     }
 
@@ -50,10 +51,11 @@ pipeline {
         deleteDir()
         echo "Unstashing"
         unstash "Windows_Binary"
+        dir("build"){
+          echo 'Packaging into a zip file'
+          bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=../dist'          
+        }
 
-        bat 'dir /s'
-        echo 'Packaging into a zip file'
-        bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
         stash includes: 'dist/**', name: "Windows_packaged"
       }
     }
