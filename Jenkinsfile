@@ -21,6 +21,8 @@ pipeline {
       }
 
       steps{
+        echo "Cleaning up"
+        deleteDir()
         unstash "Source"
         echo "Create build folder"
         bat 'mkdir build'
