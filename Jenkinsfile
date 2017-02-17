@@ -2,6 +2,9 @@ pipeline {
     agent none
 
     stages{
+        stage("Clean up"){
+        deleteDir()
+        }
         stage("Windows build") {
             agent{
                 label 'Windows'
