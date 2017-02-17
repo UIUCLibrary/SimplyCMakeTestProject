@@ -29,10 +29,10 @@ pipeline {
         echo "Configuring"
         dir('build') {
           bat 'cmake ..'
-
+          stash includes: '**', name: "Windows_configured"
         }
         bat 'dir /s'
-        stash includes: 'build/**', name: "Windows_configured"
+
       }
 
     }
