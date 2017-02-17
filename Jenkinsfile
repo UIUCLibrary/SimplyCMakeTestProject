@@ -15,7 +15,7 @@ pipeline {
 
     }
 
-    stage("Windows Building 32 bit") {
+    stage("Building Windows 32-bit") {
       agent{
         label 'Windows'
       }
@@ -42,7 +42,7 @@ pipeline {
       }
     }
 
-    stage("Windows Building 64 bit") {
+    stage("Building Windows 64-bit") {
       agent{
         label 'Windows'
       }
@@ -69,7 +69,7 @@ pipeline {
       }
     }
 
-    stage("Windows package 32 bit") {
+    stage("Packaging Windows 32-bit") {
       agent{
         label 'Windows'
       }
@@ -85,7 +85,7 @@ pipeline {
         stash includes: 'dist/**', name: "Windows_packaged_32"
       }
     }
-    stage("Windows package 64 bit") {
+    stage("Packaging Windows 64-bit") {
       agent{
         label 'Windows'
       }
