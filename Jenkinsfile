@@ -10,6 +10,7 @@ pipeline {
          deleteDir()
          echo "Cloning source"
          checkout scm
+         stash includes: '**', name: "Source"
       }
 
     }
@@ -20,6 +21,7 @@ pipeline {
       }
 
       steps{
+        unstash "Source"
         echo "Create build folder"
         bat 'mkdir build'
         echo "Configuring"
