@@ -1,76 +1,78 @@
 pipeline {
   agent none
+  
+  stages{
+    stage("Cloning source") {
+       agent any
 
-  stage("Cloning source") {
-     agent any
+       steps {
+         echo "Cleaning up"
+         deleteDir()
+         echo "Cloning source" checkout scm
+      }
 
-     steps {
-       echo "Cleaning up"
-       deleteDir()
-       echo "Cloning source" checkout scm
     }
 
-  }
+    stage("Windows Configuring Build") {
+      agent{
+        label 'Windows'
+      }
 
-  stage("Windows Configuring Build") {
-    agent{
-      label 'Windows'
+      steps{
+        echo "Create build folder"
+        bat 'mkdir build'
+        echo "Configuring"
+        dir('build') {
+          bat 'cmake ..'
+          stash includes: '**', name: "Windows_configured"
+        }
+      }
+
     }
 
-    steps{
-      echo "Create build folder"
-      bat 'mkdir build'
-      echo "Configuring"
-      dir('build') {
-        bat 'cmake ..'
-        stash includes: '**', name: "Windows_configured"
+    stage("Windows build") {
+      agent{
+        label 'Windows'
+      }
+
+      steps{
+        echo "Cleaning build directory"
+        deleteDir()
+        unstash "Windows_configured"
+
+        echo "Building"
+        bat 'cmake --build . --config Release --clean-first'
+        stash includes: '**', name: "Windows_Binary"
       }
     }
 
-  }
+    stage("Windows package") {
+      agent{
+        label 'Windows'
+      }
 
-  stage("Windows build") {
-    agent{
-      label 'Windows'
+      steps{
+        deleteDir()
+        echo "Unstashing"
+        unstash "Windows_Binary"
+        echo 'Packaging into a zip file'
+        bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
+        stash includes: 'dist/**', name: "Windows_packaged"
+      }
     }
 
-    steps{
-      echo "Cleaning build directory"
-      deleteDir()
-      unstash "Windows_configured"
+    stage("Archiving") {
+      agent any
 
-      echo "Building"
-      bat 'cmake --build . --config Release --clean-first'
-      stash includes: '**', name: "Windows_Binary"
-    }
-  }
+      steps {
+        echo "Cleaning folder"
+        deleteDir()
 
-  stage("Windows package") {
-    agent{
-      label 'Windows'
-    }
+        echo "unstashing"
+        unstash "Windows_packaged"
 
-    steps{
-      deleteDir()
-      echo "Unstashing"
-      unstash "Windows_Binary"
-      echo 'Packaging into a zip file'
-      bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
-      stash includes: 'dist/**', name: "Windows_packaged"
-    }
-  }
-
-  stage("Archiving") {
-    agent any
-
-    steps {
-      echo "Cleaning folder"
-      deleteDir()
-
-      echo "unstashing"
-      unstash "Windows_packaged"
-
-      archiveArtifacts "**"
+        archiveArtifacts "**"
+      }
     }
   }
 
