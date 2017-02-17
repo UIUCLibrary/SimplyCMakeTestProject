@@ -45,7 +45,7 @@ pipeline {
         echo "Cleaning build directory"
         deleteDir()
         unstash "Windows_configured"
-        bat 'dir'
+        bat 'dir /s'
         echo "Building"
         bat 'cmake --build . --config Release --clean-first'
         stash includes: '**', name: "Windows_Binary"
