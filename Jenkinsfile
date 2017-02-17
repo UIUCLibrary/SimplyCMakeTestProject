@@ -1,6 +1,6 @@
 pipeline {
   agent none
-  
+
   stages{
     stage("Cloning source") {
        agent any
@@ -8,7 +8,8 @@ pipeline {
        steps {
          echo "Cleaning up"
          deleteDir()
-         echo "Cloning source" checkout scm
+         echo "Cloning source"
+         checkout scm
       }
 
     }
