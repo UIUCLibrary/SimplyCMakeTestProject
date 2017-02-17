@@ -21,24 +21,31 @@ pipeline {
       stage("Windows build") {
         agent{
           label 'Windows'
-            }
-          steps{
-            // echo "Cleaning up"
-            // deleteDir()
-            //
-            //   echo "Cloning source"
-            //   checkout scm
+        }
+        steps{
 
             echo "Configuring"
             bat 'cmake .'
 
             echo "Building"
             bat 'cmake --build . --config Release --clean-first'
+            stash includes: '**', name: "Windows_Binary"
+          }
 
+        stage("Windows package") {
+
+          agent{
+            label 'Windows'
+          }
+
+          steps{
+            deleteDir()
+            echo "unstashing"
+            unstash "Windows_Binary"
             echo 'Packaging into a zip file'
             bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
 
-            stash includes: 'dist/**', name: "Windows_dist"
+            stash includes: 'dist/**', name: "Windows_packaged"
             }
         }
         stage("Archiving") {
@@ -48,7 +55,7 @@ pipeline {
             deleteDir()
 
             echo "unstashing"
-            unstash "Windows_dist"
+            unstash "Windows_packaged"
             archiveArtifacts "**"
           }
         }
