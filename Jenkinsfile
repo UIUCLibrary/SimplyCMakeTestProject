@@ -110,7 +110,7 @@ pipeline {
         deleteDir()
         unstash "Windows_packaged_64"
         unstash "Windows_packaged_32"
-        archiveArtifacts "**"
+        archiveArtifacts "**", fingerprint: true
       }
     }
   }
