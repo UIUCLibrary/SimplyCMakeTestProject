@@ -29,10 +29,11 @@ pipeline {
         echo "Create build folder"
         bat 'mkdir build'
 
-        echo "Configuring"
+
         dir('build') {
+          echo "Configuring"
           bat 'cmake ..'
-          bat 'dir /s'
+
           echo "Building"
           bat 'cmake --build . --config Release'
           stash includes: '**', name: "Windows_Binary"
@@ -49,6 +50,8 @@ pipeline {
         deleteDir()
         echo "Unstashing"
         unstash "Windows_Binary"
+
+        bat 'dir /s'
         echo 'Packaging into a zip file'
         bat 'cpack -G ZIP -D CPACK_OUTPUT_FILE_PREFIX=dist'
         stash includes: 'dist/**', name: "Windows_packaged"
