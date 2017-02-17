@@ -10,9 +10,12 @@ pipeline {
                 echo "Cloning source"
                 checkout scm
                 echo "Configuring"
-                bat 'cmake . -DCMAKE_INSTALL_PREFIX=.\\dist'
+                // bat 'cmake . -DCMAKE_INSTALL_PREFIX=.\\dist'
+                bat 'cmake .'
                 echo "Building"
                 bat 'cmake --build . --config Release --clean-first'
+                echo 'Packaging into a zip file'
+                bat 'cpack -G ZIP'
                 // bat 'cmake --build . --target install --config Release'
                 archiveArtifacts 'dist/**'
 
