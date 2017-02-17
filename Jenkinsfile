@@ -44,6 +44,10 @@ pipeline {
         stage("Archiving") {
           agent any
           steps {
+            echo "Cleaning folder"
+            deleteDir()
+
+            echo "unstashing"
             unstash "Windows_dist"
             archiveArtifacts "**"
           }
