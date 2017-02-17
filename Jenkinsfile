@@ -42,7 +42,8 @@ pipeline {
             }
         }
         stage("Archiving") {
-          agent any {
+          agent any
+          steps {
             unstash "Windows_dist"
             archiveArtifacts "**"
           }
